@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Погода на маршруте</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Погода на маршруте</h1>
+        
+        <!-- Графики Dash -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <iframe src="{{ dash_url }}" width="100%" height="800" frameborder="0" title="Графики погоды"></iframe>
+            </div>
+        </div>
+
+        <!-- Таблицы с погодой -->
+        <div class="row">
+            {% for point in points %}
+            <div class="col-md-4 mb-4">
+                <h2 class="text-center">{{ point.location }}</h2>
+                {% if point.weather.get('errors') %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ point.weather.get('errors') }}
+                    </div>
+                {% else %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Погодные условия</th>
+                                <th>Значение</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, value in point.weather.items() %}
+                                {% if key == 'data' %}
+                                    {% for data_key, data_value in value.items() %}
+                                        <tr>
+                                            <td>{{ data_key }}</td>
+                                            <td>{{ data_value }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if key == 'good' %}
+                                    <tr>
+                                        <td>Погода хорошая?</td>
+                                        <td>{% if value %}Да{% else %}Нет{% endif %}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-primary">Вернуться</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
