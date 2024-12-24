@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Погода на маршруте</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .custom-select {
+            border-radius: .25rem;
+        }
+        .city-input {
+            margin-bottom: 10px;
+        }
+        .remove-city {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Погода на маршруте</h1>
+        
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form method="POST">
+            <div id="cities-container">
+                <div class="form-group city-input">
+                    <label for="point1">Город 1:</label>
+                    <div class="d-flex">
+                        <input type="text" class="form-control" id="point1" name="point1" required>
+                        <button type="button" class="btn btn-danger remove-city" onclick="removeCity(this)">✕</button>
+                    </div>
+                </div>
+                <div class="form-group city-input">
+                    <label for="point2">Город 2:</label>
+                    <div class="d-flex">
+                        <input type="text" class="form-control" id="point2" name="point2" required>
+                        <button type="button" class="btn btn-danger remove-city" onclick="removeCity(this)">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary mb-3" onclick="addCity()">Добавить город</button>
+
+            <select name="days_interval" class="form-select form-select-lg custom-select mb-3">
+                <option value="1">1 день</option>
+                <option value="3">3 дня</option>
+                <option value="5">5 дней</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary btn-block">Получить прогноз</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        let cityCount = 2;
+
+        function addCity() {
+            cityCount++;
+            const container = document.getElementById('cities-container');
+
+            const newCityDiv = document.createElement('div');
+            newCityDiv.className = 'form-group city-input';
+            newCityDiv.innerHTML = `
+                <label for="point${cityCount}">Город ${cityCount}:</label>
+                <div class="d-flex">
+                    <input type="text" class="form-control" id="point${cityCount}" name="point${cityCount}" required>
+                    <button type="button" class="btn btn-danger remove-city" onclick="removeCity(this)">✕</button>
+                </div>
+            `;
+
+            container.appendChild(newCityDiv);
+        }
+
+        function removeCity(button) {
+            const cityInput = button.closest('.city-input');
+            cityInput.remove();
+            cityCount--;
+        }
+    </script>
+</body>
+</html>
